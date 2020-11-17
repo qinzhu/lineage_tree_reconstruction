@@ -1,0 +1,77 @@
+---
+title: "Lineage reconstruction dataset overview"
+author: "Qin Zhu"
+date: "11/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+## Load the data
+
+`data/eset_ABprp.rds` contains the single cell expression data of the ABprp lineage, it is an ExpressionSet object.
+`data/subtree_ABprp.rds` contains the corresponding lineage tree. 
+
+```{r}
+library(BiocGenerics)
+library(Biobase)
+library(Matrix)
+
+cur_eset <- readRDS("data/eset_ABprp.rds")
+cur_tree <- readRDS("data/subtree_ABprp.rds")
+```
+
+Now let's take a look at the ExpressionSet object:
+
+```{r}
+cur_eset@assayData$exprs[1:5, 1:5] # The exprs slot contains the raw count matrix in sparse matrix format
+cur_eset@assayData$norm_exprs[1:5, 1:5] # The norm_exprs slot contains the log2 transformed normalized count matrix in sparse matrix format
+head(pData(cur_eset)) # The pData() is used to get meta data for the cells, such as lineage, cell type, embryo time and batch
+```
+
+The tree table is shows the cell lineage relationship, from means parent cell, to means daughter cell of that parent cell, br_name means the birth time of the parent cell and d_time means the brith time of the daughter cell. "lineage" column is the most important column because it corresponds to the lineage annotation in the single cell data (`pData(cur_eset)$lineage`). 
+
+```{r}
+head(cur_tree)
+```
+
+With these two R object, the goal is to reconstruct the cell lineage tree (as presented in `cur_tree`) with just the single cell expression data (`cur_eset`). 
+
+You can first compute average expression of each lineage using the `cur_eset@assayData$norm_exprs` and `pData(cur_eset)$lineage`, then try to reconstruct the lineage tree using the average expression.
+
+If you think average expression is not a good statistic to represent each lineage, you can come up with your own statistic, or directly build the tree with the single cell data.
+
+
+## Visualization
+
+Here's just some visualization to help you better understand the data. You do not need to understand any of the plotting function.
+
+you can see in this plot, the lineage tree is shown on the top and the single cell data is shown at the bottom (presented as a UMAP plot). The links between the vertices of the lineage tree and the single cell clusters represents the mapping between the two.
+
+```{r}
+library(ggtree)
+library(ggplot2)
+library(dplyr)
+library(tidytree)
+source("scripts/plotFunctions.R")
+source("scripts/tree_helper_function.R")
+source("scripts/tree_plot_function.R")
+
+top_tree <- make_lineage_ggtree(in_tree = cur_tree, root = "ABprp", time.cut = 250, color.annot = "lineage", branch.length='lifetime') + guides(color= F)
+lineage_color = get_factor_color(unique(cur_eset$lineage), "Set1")
+names(lineage_color) <- unique(cur_eset$lineage)
+res <- make_tree_dimr(proj=pData(cur_eset)[, c("UMAP1", "UMAP2", "lineage")], left_tree = NULL, right_tree = NULL, top_tree = top_tree, shared.col = "lineage", colorBy = "lineage", tree.color = lineage_color, label.time.cut = 120,
+                      plot.link = "top", shift.y.scale = 1/20, 
+                      return_coords = F) 
+
+res
+```
+
+
+
+
+
+
+
