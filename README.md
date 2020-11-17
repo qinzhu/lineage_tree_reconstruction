@@ -1,3 +1,3 @@
 # lineage_tree_reconstruction
 
-Check dataset_overview.html for details.
+Git clone this repository and check dataset_overview.html for detailed instructions.
