@@ -1,7 +1,6 @@
 ---
-title: "Lineage reconstruction dataset overview"
-author: "Qin Zhu"
-date: "11/17/2020"
+title: "Reconstructing lineage tree with single cell RNA-Seq data"
+author: "Qin Zhu, Kim Lab"
 output: html_document
 ---
 
