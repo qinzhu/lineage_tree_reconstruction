@@ -8,7 +8,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
-## Load the data
+## Dataset
 
 `data/eset_ABprp.rds` contains the single cell expression data of the ABprp lineage, it is an ExpressionSet object.
 `data/subtree_ABprp.rds` contains the corresponding lineage tree. 
@@ -38,10 +38,9 @@ head(cur_tree)
 
 With these two R object, the goal is to reconstruct the cell lineage tree (as presented in `cur_tree`) with just the single cell expression data (`cur_eset`). 
 
-You can first compute average expression of each lineage using the `cur_eset@assayData$norm_exprs` and `pData(cur_eset)$lineage`, then try to reconstruct the lineage tree using the average expression.
+* Easy version of the problem: You can first compute average expression of each lineage using the `cur_eset@assayData$norm_exprs` and `pData(cur_eset)$lineage`, then try to reconstruct the lineage tree using the average expression. If you think average expression is not a good statistic to represent each lineage, you can come up with your own statistic, or directly build the tree with the single cell data.
 
-If you think average expression is not a good statistic to represent each lineage, you can come up with your own statistic, or directly build the tree with the single cell data.
-
+* Complete version of the problem: Direct recontruct lineage tree from single cells.
 
 ## Visualization
 
@@ -67,6 +66,26 @@ res <- make_tree_dimr(proj=pData(cur_eset)[, c("UMAP1", "UMAP2", "lineage")], le
 
 res
 ```
+
+## The Grand Challenge
+
+This part is not required for your final project but you are encouraged to give it a try.
+
+You can find the complete C. elegans embryogenesis dataset here: https://github.com/qinzhu/VisCello.celegans
+
+Once you git clone `VisCello.celegans`, you can get the ExpressionSet containing all cells and the entire cell lineage tree from commands below:
+
+```{r, eval=F}
+# Assuming working directory being the VisCello.celegans
+eset <- readRDS("inst/app/data/eset.rds") # Same formatted as eset above
+lineage_table <- readRDS("inst/app/data/lineage_tree_tbl.rds") # Same as tree table above
+```
+
+Note there are some cells with ambiguous lineage mapping or no lineage mapping due to lack of information, in such case, you'll find the lineage of that cell as "unannotated". 
+
+Can you reconstruct the entire C. elegans embryogenesis cell lineage tree with this data?
+
+
 
 
 
