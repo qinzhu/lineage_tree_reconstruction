@@ -476,7 +476,7 @@ cur_tree &lt;- readRDS(&quot;data/subtree_ABprp.rds&quot;)</code></pre>
 ## AAAGCAAGTTCCTCCA-300.1.1 1.471471 0.4837287      21
 ## AAATGCCGTGTGTGCC-300.1.1 1.122870 0.5310053      27
 ## AACACGTTCGAATGCT-300.1.1 1.292154 0.8452910      58</code></pre>
-<p>The tree table is shows the cell lineage relationship, from means parent cell, to means daughter cell of that parent cell, br_name means the birth time of the parent cell and d_time means the brith time of the daughter cell. “lineage” column is the most important column because it corresponds to the lineage annotation in the single cell data (<code>pData(cur_eset)$lineage</code>).</p>
+<p>The tree table is shows the cell lineage relationship, from means parent cell, to means daughter cell of that parent cell, br_name means the birth time of the parent cell and d_time means the brith time of the daughter cell. “lineage” column is the most important column because it corresponds to the lineage annotation in the single cell data (<code>pData(cur_eset)$lineage</code>). Note for lineages like “ABpxpaaa”, the “x” corresponds to “r” (right) or “l” (left) because of symmetry (ABprpaaa and ABplpaaa have same expression profile). In this ABprp subtree, you can treat it as “ABprpaaa”.</p>
 <pre class="r"><code>head(cur_tree)</code></pre>
 <pre><code>##        from         to br_time d_time lifetime level    lineage Cell
 ## 1     ABprp     ABprpa      75    103       28     5     ABpxpa &lt;NA&gt;
